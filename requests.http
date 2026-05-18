@@ -1,0 +1,71 @@
+### Salud
+GET http://localhost:3000/api/health
+
+### Calcular diagnostico
+POST http://localhost:3000/api/calcular
+Content-Type: application/json
+
+{
+  "ingresos_mensuales": 2500000,
+  "gastos_mensuales": 2800000,
+  "deuda_total": 42000000,
+  "numero_acreedores": 3,
+  "tiene_mora": true,
+  "tipo_deuda": "consumo",
+  "tipo_persona": "natural"
+}
+
+### Crear lead
+POST http://localhost:3000/api/leads
+Content-Type: application/json
+
+{
+  "nombre": "Ana Perez",
+  "telefono": "3001112233",
+  "correo": "ana@example.com",
+  "ciudad": "Bogota",
+  "calculo": {
+    "ingresos_mensuales": 2500000,
+    "gastos_mensuales": 2800000,
+    "deuda_total": 42000000,
+    "numero_acreedores": 3,
+    "tiene_mora": true,
+    "tipo_deuda": "consumo",
+    "tipo_persona": "natural"
+  }
+}
+
+### Login
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "correo": "admin@avanzar.local",
+  "password": "Admin12345!"
+}
+
+### Usuario actual
+GET http://localhost:3000/api/auth/me
+Authorization: Bearer {{token}}
+
+### Listar leads
+GET http://localhost:3000/api/leads?estado=nuevo&servicio_recomendado=insolvencia&page=1&limit=20
+Authorization: Bearer {{token}}
+
+### Detalle lead
+GET http://localhost:3000/api/leads/{{lead_id}}
+Authorization: Bearer {{token}}
+
+### Actualizar estado
+PATCH http://localhost:3000/api/leads/{{lead_id}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "estado": "contactado",
+  "comentario": "Contacto inicial realizado."
+}
+
+### Exportar CSV
+GET http://localhost:3000/api/leads/export?fecha_desde=2026-01-01
+Authorization: Bearer {{token}}
