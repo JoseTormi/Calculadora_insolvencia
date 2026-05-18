@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calculadora de Insolvencia | Alianza Juridica Avanzar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { avanzar: { azul: '#123b70', verde: '#0f8f72', claro: '#eef7f5' } }
+          }
+        }
+      };
+    </script>
+  </head>
+  <body class="bg-slate-50 text-slate-900">
+    <main class="mx-auto grid min-h-screen max-w-6xl gap-8 px-4 py-8 lg:grid-cols-[1.1fr_.9fr]">
+      <section class="flex flex-col justify-center">
+        <p class="text-sm font-semibold uppercase tracking-wide text-avanzar-verde">Alianza Juridica Avanzar</p>
+        <h1 class="mt-3 text-4xl font-bold text-avanzar-azul md:text-5xl">Evalua tu perfil de insolvencia</h1>
+        <p class="mt-4 max-w-2xl text-lg text-slate-700">
+          Recibe un diagnostico orientativo y deja tus datos para que un asesor revise tu caso.
+        </p>
+        <div id="resultado" class="mt-8 hidden rounded-lg border border-avanzar-verde bg-white p-5 shadow-sm"></div>
+      </section>
+
+      <section class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200">
+        <form id="form-calculo" class="space-y-4">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <label class="block text-sm font-medium">Ingresos mensuales
+              <input class="mt-1 w-full rounded-md border p-3" name="ingresos_mensuales" type="number" min="0" required />
+            </label>
+            <label class="block text-sm font-medium">Gastos mensuales
+              <input class="mt-1 w-full rounded-md border p-3" name="gastos_mensuales" type="number" min="0" required />
+            </label>
+            <label class="block text-sm font-medium">Deuda total
+              <input class="mt-1 w-full rounded-md border p-3" name="deuda_total" type="number" min="0" required />
+            </label>
+            <label class="block text-sm font-medium">Numero de acreedores
+              <input class="mt-1 w-full rounded-md border p-3" name="numero_acreedores" type="number" min="0" required />
+            </label>
+            <label class="block text-sm font-medium">Tipo de deuda
+              <select class="mt-1 w-full rounded-md border p-3" name="tipo_deuda">
+                <option value="consumo">Consumo</option>
+                <option value="hipotecaria">Hipotecaria</option>
+                <option value="mixta">Mixta</option>
+                <option value="otra">Otra</option>
+              </select>
+            </label>
+            <label class="block text-sm font-medium">Tipo de persona
+              <select class="mt-1 w-full rounded-md border p-3" name="tipo_persona">
+                <option value="natural">Natural</option>
+                <option value="juridica">Juridica</option>
+              </select>
+            </label>
+          </div>
+          <label class="flex items-center gap-2 text-sm font-medium">
+            <input name="tiene_mora" type="checkbox" class="h-4 w-4" /> Tengo mora actualmente
+          </label>
+          <button class="w-full rounded-md bg-avanzar-azul px-4 py-3 font-semibold text-white hover:bg-blue-900" type="submit">
+            Calcular diagnostico
+          </button>
+        </form>
+
+        <form id="form-lead" class="mt-6 hidden space-y-4 border-t pt-6">
+          <h2 class="text-xl font-semibold text-avanzar-azul">Recibir asesoria</h2>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <input class="rounded-md border p-3" name="nombre" placeholder="Nombre completo" required />
+            <input class="rounded-md border p-3" name="telefono" placeholder="Telefono" required />
+            <input class="rounded-md border p-3" name="correo" type="email" placeholder="Correo" required />
+            <input class="rounded-md border p-3" name="ciudad" placeholder="Ciudad" required />
+          </div>
+          <button class="w-full rounded-md bg-avanzar-verde px-4 py-3 font-semibold text-white hover:bg-emerald-700" type="submit">
+            Enviar mis datos
+          </button>
+          <p id="lead-msg" class="text-sm"></p>
+        </form>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>
