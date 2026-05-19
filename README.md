@@ -94,25 +94,47 @@ Endpoints principales:
 - `GET /api/leads/export`
 - `GET /api/health`
 
-## Despliegue en Render + Supabase
+## Despliegue en Render
 
-1. Crear proyecto en Supabase y copiar `DATABASE_URL` con SSL.
-2. En Render, crear un Web Service conectado al repositorio.
-3. Configurar:
+El repositorio incluye `render.yaml` para desplegar la app como Web Service de Node.js. Render ejecuta:
 
 ```text
-Build Command: npm install
-Start Command: npm run migrate && npm start
+Build Command: npm ci
+Pre-Deploy Command: npm run migrate
+Start Command: npm start
+Health Check Path: /api/health
 ```
 
-4. Agregar variables de entorno de `.env.example`.
+1. Subir el repositorio a GitHub o GitLab.
+2. Crear una base PostgreSQL. Puede ser Render Postgres, Supabase u otro PostgreSQL accesible desde Render.
+3. En Render, crear un Blueprint desde este repositorio o crear un Web Service manual usando los comandos anteriores.
+4. Configurar las variables de entorno:
+
+```text
+DATABASE_URL=postgresql://...
+JWT_SECRET=un-secreto-largo-de-produccion
+NODE_ENV=production
+CORS_ORIGIN=https://tu-servicio.onrender.com
+BITRIX_WEBHOOK_URL=
+WASAPI_API_URL=
+WASAPI_TOKEN=
+```
+
+Si usas el Blueprint, `JWT_SECRET` se genera automaticamente y Render pedira `DATABASE_URL`, `CORS_ORIGIN` y las credenciales opcionales.
+
 5. Ejecutar el seed una vez desde Render Shell:
 
 ```bash
 SEED_ADMIN_EMAIL=admin@avanzar.com SEED_ADMIN_PASSWORD='cambie-esto' npm run seed
 ```
 
-6. Configurar `CORS_ORIGIN` con el dominio final.
+6. Abrir:
+
+```text
+https://tu-servicio.onrender.com/
+https://tu-servicio.onrender.com/panel
+https://tu-servicio.onrender.com/api/health
+```
 
 ## Frontend en Express o Vercel
 

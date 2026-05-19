@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: calculadora-insolvencia
+    runtime: node
+    buildCommand: npm ci
+    preDeployCommand: npm run migrate
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: BITRIX_WEBHOOK_URL
+        sync: false
+      - key: WASAPI_API_URL
+        sync: false
+      - key: WASAPI_TOKEN
+        sync: false
