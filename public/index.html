@@ -4,81 +4,491 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Calculadora de Insolvencia | Alianza Juridica Avanzar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
-            colors: { avanzar: { azul: '#123b70', verde: '#0f8f72', claro: '#eef7f5' } }
+            colors: {
+              avanzar: {
+                azul: '#002855',
+                rojo: '#D2232A',
+                tinta: '#050d1a'
+              }
+            }
           }
         }
       };
     </script>
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+        margin: 0;
+        background: #050d1a;
+        color: #fff;
+      }
+
+      body {
+        overflow-x: hidden;
+      }
+
+      input[type='range'] {
+        accent-color: #d2232a;
+      }
+
+      .af-shell {
+        position: relative;
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 540px;
+        background: linear-gradient(135deg, #050d1a 0%, #071428 50%, #03080f 100%);
+        overflow: hidden;
+      }
+
+      .af-canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .af-left,
+      .af-right {
+        position: relative;
+        z-index: 1;
+      }
+
+      .af-left {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 56px;
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .af-left::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 1px;
+        background: linear-gradient(180deg, transparent 0%, rgba(0, 40, 85, 0.7) 28%, rgba(210, 35, 42, 0.85) 68%, transparent 100%);
+        background-size: 100% 200%;
+        animation: sideGlow 5s ease-in-out infinite alternate;
+      }
+
+      @keyframes sideGlow {
+        from {
+          background-position: 0% 0%;
+          opacity: 0.55;
+        }
+        to {
+          background-position: 0% 100%;
+          opacity: 1;
+        }
+      }
+
+      .af-right {
+        min-height: 100vh;
+        padding: 34px 38px;
+        overflow-y: auto;
+        background: rgba(255, 255, 255, 0.025);
+        backdrop-filter: blur(32px) saturate(180%);
+        -webkit-backdrop-filter: blur(32px) saturate(180%);
+      }
+
+      .af-logo img {
+        height: 150px;
+        width: auto;
+        object-fit: contain;
+      }
+
+      .af-title {
+        margin-top: 42px;
+        max-width: 620px;
+        text-align: center;
+        font-size: clamp(2.4rem, 6vw, 5rem);
+        line-height: 0.98;
+        letter-spacing: -0.055em;
+        font-weight: 800;
+      }
+
+      .af-title span {
+        background: linear-gradient(90deg, #4a7fd4, #d2232a);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .af-desc {
+        margin-top: 22px;
+        max-width: 510px;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.46);
+        line-height: 1.75;
+        font-size: 0.95rem;
+      }
+
+      .af-card {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.045);
+        box-shadow: 0 16px 42px rgba(0, 0, 0, 0.22);
+      }
+
+      .af-input,
+      .af-select {
+        width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        outline: none;
+        transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+      }
+
+      .af-input {
+        padding: 12px 14px;
+      }
+
+      .af-select {
+        padding: 12px 14px;
+        color-scheme: dark;
+      }
+
+      .af-input::placeholder {
+        color: rgba(255, 255, 255, 0.25);
+      }
+
+      .af-input:focus,
+      .af-select:focus {
+        border-color: rgba(74, 127, 212, 0.58);
+        background: rgba(255, 255, 255, 0.07);
+        box-shadow: 0 0 0 3px rgba(0, 80, 200, 0.16);
+      }
+
+      .af-primary {
+        border: 0;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #002855, #d2232a);
+        color: #fff;
+        box-shadow: 0 4px 20px rgba(210, 35, 42, 0.25);
+        transition: opacity 0.18s, box-shadow 0.18s, transform 0.18s;
+      }
+
+      .af-primary:hover {
+        opacity: 0.92;
+        box-shadow: 0 6px 28px rgba(210, 35, 42, 0.4);
+        transform: translateY(-1px);
+      }
+
+      .af-secondary {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.78);
+      }
+
+      .af-secondary:disabled {
+        cursor: not-allowed;
+        opacity: 0.35;
+      }
+
+      .af-bar {
+        background: linear-gradient(90deg, #4a7fd4, #d2232a);
+      }
+
+      .step-panel {
+        display: none;
+      }
+
+      .step-panel.is-active {
+        display: block;
+      }
+
+      @media (max-width: 980px) {
+        .af-shell {
+          display: block;
+        }
+
+        .af-left {
+          min-height: auto;
+          padding: 42px 24px 28px;
+          border-right: 0;
+        }
+
+        .af-left::after {
+          display: none;
+        }
+
+        .af-logo img {
+          height: 96px;
+        }
+
+        .af-title {
+          margin-top: 24px;
+        }
+
+        .af-right {
+          min-height: auto;
+          padding: 22px;
+        }
+      }
+    </style>
   </head>
-  <body class="bg-slate-50 text-slate-900">
-    <main class="mx-auto grid min-h-screen max-w-6xl gap-8 px-4 py-8 lg:grid-cols-[1.1fr_.9fr]">
-      <section class="flex flex-col justify-center">
-        <p class="text-sm font-semibold uppercase tracking-wide text-avanzar-verde">Alianza Juridica Avanzar</p>
-        <h1 class="mt-3 text-4xl font-bold text-avanzar-azul md:text-5xl">Evalua tu perfil de insolvencia</h1>
-        <p class="mt-4 max-w-2xl text-lg text-slate-700">
-          Recibe un diagnostico orientativo y deja tus datos para que un asesor revise tu caso.
+  <body>
+    <main class="af-shell">
+      <canvas class="af-canvas" id="ln-cv"></canvas>
+
+      <section class="af-left">
+        <div class="af-logo">
+          <img src="https://avanzarsoluciones.com/wp-content/uploads/2024/12/logo-avanzar-color.svg" alt="Avanzar Soluciones" />
+        </div>
+        <h1 class="af-title">Calculadora de<br /><span>insolvencia</span></h1>
+        <p class="af-desc">
+          Evalua tu perfil financiero, revisa tu capacidad mensual y recibe una ruta inicial para hablar con un asesor.
         </p>
-        <div id="resultado" class="mt-8 hidden rounded-lg border border-avanzar-verde bg-white p-5 shadow-sm"></div>
+
+        <div class="mt-10 grid w-full max-w-xl gap-3 sm:grid-cols-3">
+          <div class="af-card p-4 text-center">
+            <p class="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/35">Capacidad</p>
+            <p id="preview-capacidad" class="mt-2 text-lg font-bold text-white">$0</p>
+          </div>
+          <div class="af-card p-4 text-center">
+            <p class="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/35">Deuda</p>
+            <p id="preview-ratio" class="mt-2 text-lg font-bold text-white">0x</p>
+          </div>
+          <div class="af-card p-4 text-center">
+            <p class="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/35">Mora</p>
+            <p id="preview-mora" class="mt-2 text-lg font-bold text-white">No</p>
+          </div>
+        </div>
       </section>
 
-      <section class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-200">
-        <form id="form-calculo" class="space-y-4">
-          <div class="grid gap-4 sm:grid-cols-2">
-            <label class="block text-sm font-medium">Ingresos mensuales
-              <input class="mt-1 w-full rounded-md border p-3" name="ingresos_mensuales" type="number" min="0" required />
+      <section class="af-right">
+        <div class="mb-6">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/38">Diagnostico orientativo</p>
+          <h2 class="mt-2 text-2xl font-extrabold tracking-[-0.03em] text-white">Completa tu perfil</h2>
+          <p class="mt-1 text-sm text-white/40">Tus datos solo se guardan cuando envias la solicitud de asesoria.</p>
+        </div>
+
+        <div class="af-card mb-5 p-4">
+          <div class="mb-3 flex items-center justify-between gap-4">
+            <p id="step-label" class="text-xs font-bold uppercase tracking-[0.18em] text-white/55">Paso 1 de 3</p>
+            <p class="text-xs text-white/32"><span id="preview-acreedores">0</span> acreedores</p>
+          </div>
+          <div class="h-2 overflow-hidden rounded-full bg-white/8">
+            <div id="step-progress" class="af-bar h-full w-1/3 rounded-full transition-all"></div>
+          </div>
+          <div class="mt-4 grid gap-3">
+            <div>
+              <div class="mb-2 flex items-center justify-between text-xs text-white/42">
+                <span>Capacidad mensual</span>
+                <span id="bar-capacidad-label"></span>
+              </div>
+              <div class="h-2 overflow-hidden rounded-full bg-white/8">
+                <div id="bar-capacidad" class="h-full w-0 rounded-full bg-[#4a7fd4] transition-all"></div>
+              </div>
+            </div>
+            <div>
+              <div class="mb-2 flex items-center justify-between text-xs text-white/42">
+                <span>Deuda vs ingresos</span>
+              </div>
+              <div class="h-2 overflow-hidden rounded-full bg-white/8">
+                <div id="bar-ratio" class="h-full w-0 rounded-full bg-[#d2232a] transition-all"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form id="form-calculo" class="af-card p-5">
+          <fieldset class="step-panel is-active space-y-5" data-step="0">
+            <div>
+              <h3 class="text-xl font-extrabold tracking-[-0.03em] text-white">Ingresos y gastos</h3>
+              <p class="mt-1 text-sm leading-6 text-white/40">Ajusta los valores mensuales para estimar tu capacidad disponible.</p>
+            </div>
+            <label class="block">
+              <span class="text-xs font-bold uppercase tracking-[0.14em] text-white/52">Ingresos mensuales</span>
+              <div class="mt-3 grid gap-3">
+                <input data-sync="ingresos_mensuales" type="range" min="0" max="50000000" step="50000" value="3000000" class="w-full" />
+                <input class="af-input text-right font-semibold" name="ingresos_mensuales" type="number" min="0" value="3000000" required />
+              </div>
             </label>
-            <label class="block text-sm font-medium">Gastos mensuales
-              <input class="mt-1 w-full rounded-md border p-3" name="gastos_mensuales" type="number" min="0" required />
+            <label class="block">
+              <span class="text-xs font-bold uppercase tracking-[0.14em] text-white/52">Gastos mensuales</span>
+              <div class="mt-3 grid gap-3">
+                <input data-sync="gastos_mensuales" type="range" min="0" max="50000000" step="50000" value="2200000" class="w-full" />
+                <input class="af-input text-right font-semibold" name="gastos_mensuales" type="number" min="0" value="2200000" required />
+              </div>
             </label>
-            <label class="block text-sm font-medium">Deuda total
-              <input class="mt-1 w-full rounded-md border p-3" name="deuda_total" type="number" min="0" required />
+          </fieldset>
+
+          <fieldset class="step-panel space-y-5" data-step="1">
+            <div>
+              <h3 class="text-xl font-extrabold tracking-[-0.03em] text-white">Deudas y acreedores</h3>
+              <p class="mt-1 text-sm leading-6 text-white/40">Incluye bancos, tarjetas, cooperativas y otros compromisos.</p>
+            </div>
+            <label class="block">
+              <span class="text-xs font-bold uppercase tracking-[0.14em] text-white/52">Deuda total aproximada</span>
+              <div class="mt-3 grid gap-3">
+                <input data-sync="deuda_total" type="range" min="0" max="500000000" step="500000" value="45000000" class="w-full" />
+                <input class="af-input text-right font-semibold" name="deuda_total" type="number" min="0" value="45000000" required />
+              </div>
             </label>
-            <label class="block text-sm font-medium">Numero de acreedores
-              <input class="mt-1 w-full rounded-md border p-3" name="numero_acreedores" type="number" min="0" required />
+            <label class="block">
+              <span class="text-xs font-bold uppercase tracking-[0.14em] text-white/52">Numero de acreedores</span>
+              <div class="mt-3 grid gap-3">
+                <input data-sync="numero_acreedores" type="range" min="0" max="30" step="1" value="4" class="w-full" />
+                <input class="af-input text-right font-semibold" name="numero_acreedores" type="number" min="0" value="4" required />
+              </div>
             </label>
-            <label class="block text-sm font-medium">Tipo de deuda
-              <select class="mt-1 w-full rounded-md border p-3" name="tipo_deuda">
+            <label class="flex items-center justify-between gap-4 rounded-[10px] border border-white/10 bg-white/[0.04] p-4">
+              <span>
+                <span class="block text-sm font-bold text-white">Tengo mora actualmente</span>
+                <span class="text-xs leading-5 text-white/38">Activa esta opcion si ya tienes cuotas vencidas.</span>
+              </span>
+              <input name="tiene_mora" type="checkbox" class="h-6 w-6 rounded border-white/20 bg-white/5" />
+            </label>
+          </fieldset>
+
+          <fieldset class="step-panel space-y-5" data-step="2">
+            <div>
+              <h3 class="text-xl font-extrabold tracking-[-0.03em] text-white">Perfil del caso</h3>
+              <p class="mt-1 text-sm leading-6 text-white/40">Estos datos ayudan a orientar el servicio recomendado.</p>
+            </div>
+            <label class="block">
+              <span class="text-xs font-bold uppercase tracking-[0.14em] text-white/52">Tipo de deuda</span>
+              <select class="af-select mt-3" name="tipo_deuda">
                 <option value="consumo">Consumo</option>
                 <option value="hipotecaria">Hipotecaria</option>
                 <option value="mixta">Mixta</option>
                 <option value="otra">Otra</option>
               </select>
             </label>
-            <label class="block text-sm font-medium">Tipo de persona
-              <select class="mt-1 w-full rounded-md border p-3" name="tipo_persona">
+            <label class="block">
+              <span class="text-xs font-bold uppercase tracking-[0.14em] text-white/52">Tipo de persona</span>
+              <select class="af-select mt-3" name="tipo_persona">
                 <option value="natural">Natural</option>
                 <option value="juridica">Juridica</option>
               </select>
             </label>
+            <div class="rounded-[10px] border border-[#d2232a]/30 bg-[#d2232a]/10 p-4 text-sm leading-6 text-white/58">
+              El resultado es orientativo y no reemplaza una revision juridica del caso.
+            </div>
+          </fieldset>
+
+          <div class="mt-6 flex flex-col-reverse gap-3 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
+            <button id="prev-step" class="af-secondary px-5 py-3 text-sm font-bold" type="button" disabled>Atras</button>
+            <div class="flex gap-3">
+              <button id="next-step" class="af-primary px-5 py-3 text-sm font-bold" type="button">Continuar</button>
+              <button id="submit-calc" class="af-primary hidden px-5 py-3 text-sm font-bold" type="submit">Calcular diagnostico</button>
+            </div>
           </div>
-          <label class="flex items-center gap-2 text-sm font-medium">
-            <input name="tiene_mora" type="checkbox" class="h-4 w-4" /> Tengo mora actualmente
-          </label>
-          <button class="w-full rounded-md bg-avanzar-azul px-4 py-3 font-semibold text-white hover:bg-blue-900" type="submit">
-            Calcular diagnostico
-          </button>
         </form>
 
-        <form id="form-lead" class="mt-6 hidden space-y-4 border-t pt-6">
-          <h2 class="text-xl font-semibold text-avanzar-azul">Recibir asesoria</h2>
-          <div class="grid gap-4 sm:grid-cols-2">
-            <input class="rounded-md border p-3" name="nombre" placeholder="Nombre completo" required />
-            <input class="rounded-md border p-3" name="telefono" placeholder="Telefono" required />
-            <input class="rounded-md border p-3" name="correo" type="email" placeholder="Correo" required />
-            <input class="rounded-md border p-3" name="ciudad" placeholder="Ciudad" required />
+        <div id="resultado" class="af-card mt-5 hidden p-5"></div>
+
+        <form id="form-lead" class="af-card mt-5 hidden space-y-4 p-5">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/45">Siguiente paso</p>
+            <h3 class="mt-1 text-xl font-extrabold tracking-[-0.03em] text-white">Recibir asesoria</h3>
           </div>
-          <button class="w-full rounded-md bg-avanzar-verde px-4 py-3 font-semibold text-white hover:bg-emerald-700" type="submit">
-            Enviar mis datos
-          </button>
-          <p id="lead-msg" class="text-sm"></p>
+          <div class="grid gap-3">
+            <input class="af-input" name="nombre" placeholder="Nombre completo" required />
+            <input class="af-input" name="telefono" placeholder="Telefono" required />
+            <input class="af-input" name="correo" type="email" placeholder="Correo" required />
+            <input class="af-input" name="ciudad" placeholder="Ciudad" required />
+          </div>
+          <button class="af-primary w-full px-4 py-3 text-sm font-bold" type="submit">Enviar mis datos</button>
+          <p id="lead-msg" class="text-sm text-white/50"></p>
         </form>
       </section>
     </main>
+
     <script src="/app.js"></script>
+    <script>
+      (function () {
+        var cv = document.getElementById('ln-cv');
+        if (!cv) return;
+        var cx = cv.getContext('2d');
+        var w = 0;
+        var h = 0;
+        var pts = [];
+
+        function resize() {
+          w = cv.width = window.innerWidth;
+          h = cv.height = window.innerHeight;
+        }
+
+        function spawn() {
+          pts = [];
+          for (var i = 0; i < 120; i++) {
+            pts.push({
+              x: Math.random() * w,
+              y: Math.random() * h,
+              vx: (Math.random() - 0.5) * 0.7,
+              vy: (Math.random() - 0.5) * 0.7,
+              r: Math.random() * 1.8 + 0.4,
+              a: Math.random() * 0.5 + 0.15
+            });
+          }
+        }
+
+        function tick() {
+          cx.clearRect(0, 0, w, h);
+          for (var i = 0; i < pts.length; i++) {
+            var p = pts[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < -10) p.x = w + 10;
+            if (p.x > w + 10) p.x = -10;
+            if (p.y < -10) p.y = h + 10;
+            if (p.y > h + 10) p.y = -10;
+            cx.beginPath();
+            cx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            cx.fillStyle = 'rgba(255,255,255,' + p.a + ')';
+            cx.fill();
+          }
+          for (var a = 0; a < pts.length; a++) {
+            for (var b = a + 1; b < pts.length; b++) {
+              var dx = pts[a].x - pts[b].x;
+              var dy = pts[a].y - pts[b].y;
+              var d = Math.sqrt(dx * dx + dy * dy);
+              if (d < 110) {
+                cx.beginPath();
+                cx.moveTo(pts[a].x, pts[a].y);
+                cx.lineTo(pts[b].x, pts[b].y);
+                cx.strokeStyle = 'rgba(255,255,255,' + (1 - d / 110) * 0.12 + ')';
+                cx.lineWidth = 0.7;
+                cx.stroke();
+              }
+            }
+          }
+          requestAnimationFrame(tick);
+        }
+
+        resize();
+        spawn();
+        tick();
+        window.addEventListener('resize', function () {
+          resize();
+          spawn();
+        });
+      })();
+    </script>
   </body>
 </html>
