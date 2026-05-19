@@ -13,7 +13,7 @@ async function migrate() {
   for (const file of files) {
     const sql = await readFile(path.join(dir, file), 'utf8');
     await pool.query(sql);
-    logger.info({ migration: file }, 'Migracion aplicada');
+    logger.info({ migration: file }, 'Migración aplicada');
   }
 
   await pool.end();

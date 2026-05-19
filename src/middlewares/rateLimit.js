@@ -1,7 +1,7 @@
 import rateLimit from 'express-rate-limit';
 
 const jsonHandler = (req, res) => {
-  res.status(429).json({ ok: false, error: 'Demasiadas solicitudes. Intente de nuevo mas tarde.' });
+  res.status(429).json({ ok: false, error: 'Demasiadas solicitudes. Intente de nuevo más tarde.' });
 };
 
 export const calcularLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 60, standardHeaders: true, legacyHeaders: false, handler: jsonHandler });

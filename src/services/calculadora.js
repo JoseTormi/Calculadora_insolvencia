@@ -13,10 +13,10 @@ export function calcularDiagnostico(input, config = calculadoraConfig) {
   const capacidadPago = ingresos - gastos;
   const rangoDeuda = calcularRangoDeuda(deudaTotal, config);
 
-  // Diagnostico orientativo para priorizacion comercial. No reemplaza asesoria legal.
+  // Diagnóstico orientativo para priorización comercial. No reemplaza asesoría legal.
   let resultado = 'requiere_asesoria';
   let servicioRecomendado = 'insolvencia';
-  let mensaje = 'Tu caso requiere una revision personalizada para determinar la ruta legal mas conveniente.';
+  let mensaje = 'Tu caso requiere una revisión personalizada para determinar la ruta legal más conveniente.';
 
   if (input.tipo_persona === 'juridica') {
     return {
@@ -24,7 +24,7 @@ export function calcularDiagnostico(input, config = calculadoraConfig) {
       servicio_recomendado: 'reorganizacion',
       rango_deuda: rangoDeuda,
       capacidad_pago: capacidadPago,
-      mensaje: 'Por tratarse de una persona juridica, la ruta orientativa es una revision de reorganizacion empresarial.'
+      mensaje: 'Por tratarse de una persona jurídica, la ruta orientativa es una revisión de reorganización empresarial.'
     };
   }
 
@@ -45,11 +45,11 @@ export function calcularDiagnostico(input, config = calculadoraConfig) {
   if (deudaAltaFrenteCapacidad && presionDeCobro) {
     resultado = 'apto';
     servicioRecomendado = 'insolvencia';
-    mensaje = 'Con la informacion suministrada, pareces tener condiciones para evaluar Ley de Insolvencia.';
+    mensaje = 'Con la información suministrada, pareces tener condiciones para evaluar Ley de Insolvencia.';
   } else if (capacidadPago > 0 && deudaTotal <= capacidadPago * 12 && !input.tiene_mora) {
     resultado = 'no_apto';
     servicioRecomendado = 'insolvencia';
-    mensaje = 'Con la informacion suministrada, aun podria existir capacidad de pago. Recomendamos revisar alternativas antes de insolvencia.';
+    mensaje = 'Con la información suministrada, aún podría existir capacidad de pago. Recomendamos revisar alternativas antes de insolvencia.';
   }
 
   return {

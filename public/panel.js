@@ -18,6 +18,30 @@ function queryFiltros() {
   return params.toString();
 }
 
+function etiquetaResultado(resultadoApi) {
+  return {
+    apto: 'Aplica',
+    no_apto: 'No aplica',
+    requiere_asesoria: 'Requiere asesoría'
+  }[resultadoApi] || resultadoApi.replaceAll('_', ' ');
+}
+
+function etiquetaServicio(servicioApi) {
+  return {
+    insolvencia: 'Insolvencia',
+    rch: 'RCH',
+    reorganizacion: 'Reorganización'
+  }[servicioApi] || servicioApi.replaceAll('_', ' ');
+}
+
+function etiquetaEstado(estadoApi) {
+  return {
+    nuevo: 'Nuevo',
+    contactado: 'Contactado',
+    no_contactado: 'No contactado'
+  }[estadoApi] || estadoApi.replaceAll('_', ' ');
+}
+
 async function cargarLeads() {
   const response = await fetch(`/api/leads?${queryFiltros()}`, { headers: authHeaders() });
   const json = await response.json();
@@ -28,11 +52,11 @@ async function cargarLeads() {
       <td class="p-3">${lead.nombre}</td>
       <td class="p-3">${lead.ciudad}</td>
       <td class="p-3">${Number(lead.deuda_total).toLocaleString('es-CO')}</td>
-      <td class="p-3">${lead.resultado}</td>
-      <td class="p-3">${lead.servicio_recomendado}</td>
+      <td class="p-3">${etiquetaResultado(lead.resultado)}</td>
+      <td class="p-3">${etiquetaServicio(lead.servicio_recomendado)}</td>
       <td class="p-3">
         <select data-id="${lead.id}" class="estado rounded border p-1">
-          ${['nuevo', 'contactado', 'no_contactado'].map((estado) => `<option value="${estado}" ${estado === lead.estado ? 'selected' : ''}>${estado}</option>`).join('')}
+          ${['nuevo', 'contactado', 'no_contactado'].map((estado) => `<option value="${estado}" ${estado === lead.estado ? 'selected' : ''}>${etiquetaEstado(estado)}</option>`).join('')}
         </select>
       </td>
     </tr>

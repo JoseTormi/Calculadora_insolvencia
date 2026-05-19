@@ -1,6 +1,6 @@
-# Calculadora de Insolvencia - Alianza Juridica Avanzar
+# Calculadora de Insolvencia - Alianza Jurídica Avanzar
 
-Aplicacion web MVP para captar prospectos calificados, calcular un diagnostico orientativo de insolvencia/RCH/reorganizacion, registrar leads en PostgreSQL, sincronizar Bitrix24 y enviar bienvenida por WhatsApp mediante Wasapi.
+Aplicación web MVP para captar prospectos calificados, calcular un diagnóstico orientativo de insolvencia/RCH/reorganización, registrar leads en PostgreSQL, sincronizar Bitrix24 y enviar bienvenida por WhatsApp mediante Wasapi.
 
 ## Requisitos
 
@@ -9,7 +9,7 @@ Aplicacion web MVP para captar prospectos calificados, calcular un diagnostico o
 - Webhook entrante de Bitrix24
 - Token/API URL de Wasapi y plantilla aprobada por Meta
 
-## Configuracion local
+## Configuración local
 
 1. Instalar dependencias:
 
@@ -48,15 +48,15 @@ La calculadora queda en `http://localhost:3000/` y el panel en `http://localhost
 ## Variables de entorno
 
 - `PORT`: puerto HTTP.
-- `DATABASE_URL`: conexion PostgreSQL/Supabase.
+- `DATABASE_URL`: conexión PostgreSQL/Supabase.
 - `JWT_SECRET`: secreto largo para firmar JWT.
 - `CORS_ORIGIN`: origen permitido, por ejemplo `https://tu-dominio.com`.
 - `BITRIX_WEBHOOK_URL`: URL completa del webhook `crm.lead.add.json`.
 - `BITRIX_FIELD_RESULTADO`, `BITRIX_FIELD_SERVICIO`, `BITRIX_FIELD_RANGO_DEUDA`: IDs de campos personalizados en Bitrix24.
-- `WASAPI_API_URL`, `WASAPI_TOKEN`, `WASAPI_TEMPLATE_NAME`: configuracion de WhatsApp.
+- `WASAPI_API_URL`, `WASAPI_TOKEN`, `WASAPI_TEMPLATE_NAME`: configuración de WhatsApp.
 - `NODE_ENV`: `development`, `test` o `production`.
 
-Si Bitrix24 o Wasapi no estan configurados, el lead se guarda localmente y la integracion se omite con un log de advertencia.
+Si Bitrix24 o Wasapi no están configurados, el lead se guarda localmente y la integración se omite con un log de advertencia.
 
 ## Pruebas
 
@@ -64,7 +64,7 @@ Si Bitrix24 o Wasapi no estan configurados, el lead se guarda localmente y la in
 npm test
 ```
 
-Incluye pruebas unitarias de la calculadora e integracion de `/api/calcular`, `/api/leads` y `/api/auth/login` con base de datos mockeada.
+Incluye pruebas unitarias de la calculadora e integración de `/api/calcular`, `/api/leads` y `/api/auth/login` con base de datos mockeada.
 
 ## API
 
@@ -80,7 +80,7 @@ o:
 { "ok": false, "error": "Mensaje" }
 ```
 
-Ejemplos completos estan en `requests.http`.
+Ejemplos completos están en `requests.http`.
 
 Endpoints principales:
 
@@ -112,7 +112,7 @@ Health Check Path: /api/health
 
 ```text
 DATABASE_URL=postgresql://...
-JWT_SECRET=un-secreto-largo-de-produccion
+JWT_SECRET=un-secreto-largo-de-producción
 NODE_ENV=production
 CORS_ORIGIN=https://tu-servicio.onrender.com
 BITRIX_WEBHOOK_URL=
@@ -120,7 +120,7 @@ WASAPI_API_URL=
 WASAPI_TOKEN=
 ```
 
-Si usas el Blueprint, `JWT_SECRET` se genera automaticamente y Render pedira `DATABASE_URL`, `CORS_ORIGIN` y las credenciales opcionales.
+Si usas el Blueprint, `JWT_SECRET` se genera automáticamente y Render pedirá `DATABASE_URL`, `CORS_ORIGIN` y las credenciales opcionales.
 
 5. Ejecutar el seed una vez desde Render Shell:
 
@@ -140,18 +140,18 @@ https://tu-servicio.onrender.com/api/health
 
 Por defecto Express sirve `/public`, suficiente para Render.
 
-Para Vercel, subir `/public` como sitio estatico y definir en el JavaScript una URL base hacia el backend, o mantener frontend y API juntos en Render para simplificar el MVP.
+Para Vercel, subir `/public` como sitio estático y definir en el JavaScript una URL base hacia el backend, o mantener frontend y API juntos en Render para simplificar el MVP.
 
-## Decisiones tecnicas
+## Decisiones técnicas
 
 - Se usa `pg` y migraciones SQL simples para compatibilidad directa con Supabase.
-- Las integraciones externas corren de forma asincrona tras guardar el lead, para no bloquear al usuario.
-- La calculadora esta parametrizada en `src/config/constants.js`; sus reglas son orientativas y no constituyen asesoria legal.
-- No se registran datos personales en logs de nivel informativo; los errores de integracion registran identificador interno del lead.
+- Las integraciones externas corren de forma asíncrona tras guardar el lead, para no bloquear al usuario.
+- La calculadora está parametrizada en `src/config/constants.js`; sus reglas son orientativas y no constituyen asesoría legal.
+- No se registran datos personales en logs de nivel informativo; los errores de integración registran identificador interno del lead.
 
-## Pendiente para produccion
+## Pendiente para producción
 
 - Configurar campos personalizados reales de Bitrix24.
-- Confirmar contrato exacto de Wasapi segun la cuenta/proveedor y plantilla aprobada.
-- Agregar auditoria historica de comentarios/estados si el proceso comercial lo requiere.
-- Activar monitoreo, backups y rotacion de secretos.
+- Confirmar contrato exacto de Wasapi según la cuenta/proveedor y plantilla aprobada.
+- Agregar auditoría histórica de comentarios/estados si el proceso comercial lo requiere.
+- Activar monitoreo, backups y rotación de secretos.

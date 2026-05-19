@@ -45,7 +45,7 @@ function actualizarPreview() {
   document.querySelector('#preview-capacidad').textContent = peso(capacidad);
   document.querySelector('#preview-ratio').textContent = `${ratio.toFixed(1)}x`;
   document.querySelector('#preview-acreedores').textContent = calculo.numero_acreedores;
-  document.querySelector('#preview-mora').textContent = calculo.tiene_mora ? 'Si' : 'No';
+  document.querySelector('#preview-mora').textContent = calculo.tiene_mora ? 'Sí' : 'No';
   document.querySelector('#bar-capacidad').style.width = `${capacidadPorcentaje}%`;
   document.querySelector('#bar-ratio').style.width = `${ratioPorcentaje}%`;
 }
@@ -66,17 +66,33 @@ function pasoValido() {
   return controles.every((control) => control.reportValidity());
 }
 
+function etiquetaResultado(resultadoApi) {
+  return {
+    apto: 'Aplica',
+    no_apto: 'No aplica',
+    requiere_asesoria: 'Requiere asesoría'
+  }[resultadoApi] || resultadoApi.replaceAll('_', ' ');
+}
+
+function etiquetaServicio(servicioApi) {
+  return {
+    insolvencia: 'Insolvencia',
+    rch: 'RCH',
+    reorganizacion: 'Reorganización'
+  }[servicioApi] || servicioApi.replaceAll('_', ' ');
+}
+
 function pintarResultado(data) {
-  const resultadoTexto = data.resultado.replaceAll('_', ' ');
+  const resultadoTexto = etiquetaResultado(data.resultado);
   resultado.classList.remove('hidden');
   resultado.innerHTML = `
     <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/45">Resultado orientativo</p>
-    <h2 class="mt-2 text-3xl font-extrabold capitalize tracking-[-0.03em] text-white">${resultadoTexto}</h2>
+    <h2 class="mt-2 text-3xl font-extrabold tracking-[-0.03em] text-white">${resultadoTexto}</h2>
     <p class="mt-3 leading-7 text-white/58">${data.mensaje}</p>
     <div class="mt-5 grid gap-3 text-sm">
       <div class="rounded-[10px] border border-white/10 bg-white/[0.04] p-3">
         <span class="block text-white/38">Servicio recomendado</span>
-        <strong class="mt-1 block text-lg capitalize text-white">${data.servicio_recomendado}</strong>
+        <strong class="mt-1 block text-lg text-white">${etiquetaServicio(data.servicio_recomendado)}</strong>
       </div>
       <div class="rounded-[10px] border border-white/10 bg-white/[0.04] p-3">
         <span class="block text-white/38">Rango de deuda</span>
@@ -136,7 +152,7 @@ formCalculo.addEventListener('submit', async (event) => {
     formLead.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } finally {
     submitCalc.disabled = false;
-    submitCalc.textContent = 'Calcular diagnostico';
+    submitCalc.textContent = 'Calcular diagnóstico';
   }
 });
 
@@ -151,7 +167,7 @@ formLead.addEventListener('submit', async (event) => {
   });
   const json = await response.json();
   leadMsg.textContent = json.ok
-    ? 'Datos recibidos. Un asesor se comunicara contigo.'
+    ? 'Datos recibidos. Un asesor se comunicará contigo.'
     : json.error || 'No fue posible guardar tus datos.';
   leadMsg.className = json.ok ? 'text-sm text-green-300' : 'text-sm text-red-300';
   if (json.ok) formLead.reset();
